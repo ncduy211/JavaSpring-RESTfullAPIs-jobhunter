@@ -1,11 +1,14 @@
 package vn.duync.jobhunter.service.impl;
 
-import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import vn.duync.jobhunter.domain.User;
+import vn.duync.jobhunter.domain.dto.Meta;
+import vn.duync.jobhunter.domain.dto.ResultPaginationDTO;
 import vn.duync.jobhunter.repository.UserRepository;
 import vn.duync.jobhunter.service.UserService;
 
@@ -29,8 +32,20 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    public List<User> getAllUsers() {
-        return this.userRepository.findAll();
+    public ResultPaginationDTO getAllUsers(Pageable pageable) {
+        Page<User> pageUser = this.userRepository.findAll(pageable);
+
+        ResultPaginationDTO resultPage = new ResultPaginationDTO();
+        Meta meta = new Meta();
+
+        meta.setPage(pageUser.getNumber() + 1);
+        meta.setPageSize(pageUser.getSize());
+        meta.setTotal(pageUser.getTotalPages());
+        meta.setTotal(pageUser.getTotalElements());
+
+        resultPage.setMeta(meta);
+        resultPage.setResult(pageUser.getContent());
+        return resultPage;
     }
 
     public User handleUpdateUser(Long id, User user) {
@@ -40,6 +55,7 @@ public class UserServiceImpl implements UserService {
             currentUser.setName(user.getName());
             currentUser.setEmail(user.getEmail());
             currentUser.setPassword(user.getPassword());
+
             return this.userRepository.save(currentUser);
         }
         return null;
