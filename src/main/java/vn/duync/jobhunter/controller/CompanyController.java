@@ -2,16 +2,16 @@ package vn.duync.jobhunter.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.turkraft.springfilter.boot.Filter;
+
 import jakarta.validation.Valid;
 import vn.duync.jobhunter.domain.Company;
 import vn.duync.jobhunter.domain.dto.ResultPaginationDTO;
 import vn.duync.jobhunter.service.impl.CompanyServiceImpl;
 import vn.duync.jobhunter.util.error.IdInvalidException;
 
-import java.util.Optional;
-
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 public class CompanyController {
@@ -44,17 +43,10 @@ public class CompanyController {
 
     @GetMapping("/companies")
     public ResponseEntity<ResultPaginationDTO> getAllCompanies(
-            @RequestParam("current") Optional<String> currentPageOptional,
-            @RequestParam("pageSize") Optional<String> pageSizeOptional) {
-        String stringCurrentPage = currentPageOptional.isPresent() ? currentPageOptional.get() : "";
-        int currentPage = Integer.parseInt(stringCurrentPage);
+            @Filter Specification<Company> spec,
+            Pageable pageable) {
 
-        String stringPageSize = pageSizeOptional.isPresent() ? pageSizeOptional.get() : "";
-        int pageSize = Integer.parseInt(stringPageSize);
-
-        Pageable pageable = PageRequest.of(currentPage - 1, pageSize);
-
-        ResultPaginationDTO listCompanies = this.companyServiceImpl.getAllCompanies(pageable);
+        ResultPaginationDTO listCompanies = this.companyServiceImpl.getAllCompanies(spec, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(listCompanies);
     }
 
