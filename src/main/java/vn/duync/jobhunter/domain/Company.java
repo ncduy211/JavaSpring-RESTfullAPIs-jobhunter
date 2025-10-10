@@ -40,13 +40,14 @@ public class Company {
     private Instant createdAt;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GTM+7")
-    private Instant updatedAt;
+    private Instant createAt;
 
     private String createBy;
 
-    private String updateBy;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GTM+7")
     private Instant updateAt;
+
+    private String updateBy;
 
     @PrePersist
     public void handleBeforeCreate() {

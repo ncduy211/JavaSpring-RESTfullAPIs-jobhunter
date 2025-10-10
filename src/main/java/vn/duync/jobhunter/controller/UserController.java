@@ -18,6 +18,9 @@ import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import vn.duync.jobhunter.domain.User;
 import vn.duync.jobhunter.domain.dto.ResultPaginationDTO;
+import vn.duync.jobhunter.domain.dto.resuserDTO.ResCreateUserDTO;
+import vn.duync.jobhunter.domain.dto.resuserDTO.ResGetUserDTO;
+import vn.duync.jobhunter.domain.dto.resuserDTO.ResUpdateUserDTO;
 import vn.duync.jobhunter.service.impl.UserServiceImpl;
 import vn.duync.jobhunter.util.annotation.ApiMessage;
 import vn.duync.jobhunter.util.error.IdInvalidException;
@@ -34,18 +37,19 @@ public class UserController {
 
     @PostMapping("/users/create")
     @ApiMessage("Create user")
-    public ResponseEntity<User> createUser(@Valid @RequestBody User newUser) {
+    public ResponseEntity<ResCreateUserDTO> createUser(@Valid @RequestBody User newUser) {
         String hashPassword = this.passwordEncoder.encode(newUser.getPassword());
         newUser.setPassword(hashPassword);
+
         this.userServiceImpl.handleCreateUser(newUser);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.userServiceImpl.convertToResCreateUserDTO(newUser));
     }
 
     @GetMapping("/users/{id}")
     @ApiMessage("Get one user by id")
-    public ResponseEntity<User> getOneUserById(@PathVariable("id") Long id) {
+    public ResponseEntity<ResGetUserDTO> getOneUserById(@PathVariable("id") Long id) {
         User user = this.userServiceImpl.getOneUserById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(user);
+        return ResponseEntity.status(HttpStatus.OK).body(this.userServiceImpl.convertToResGetUserDTO(user));
     }
 
     @GetMapping("/users")
@@ -60,9 +64,10 @@ public class UserController {
 
     @PutMapping("/users/update/{id}")
     @ApiMessage("Update user")
-    public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @Valid @RequestBody User updatedUser) {
+    public ResponseEntity<ResUpdateUserDTO> updateUser(@PathVariable("id") Long id,
+            @Valid @RequestBody User updatedUser) {
         User user = this.userServiceImpl.handleUpdateUser(id, updatedUser);
-        return ResponseEntity.status(HttpStatus.OK).body(user);
+        return ResponseEntity.status(HttpStatus.OK).body(this.userServiceImpl.convertToResUpdateUserDTO(user));
     }
 
     @DeleteMapping("/users/delete/{id}")

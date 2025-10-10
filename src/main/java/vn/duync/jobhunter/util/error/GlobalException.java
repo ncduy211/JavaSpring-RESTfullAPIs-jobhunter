@@ -12,6 +12,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import vn.duync.jobhunter.domain.RestResponse;
 
@@ -46,6 +47,36 @@ public class GlobalException {
             errors.add(fieldError.getField() + ": " + fieldError.getDefaultMessage());
         }
         restResponse.setMessage(errors);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(restResponse);
+    }
+
+    @ExceptionHandler(value = IdInvalidException.class)
+    public ResponseEntity<RestResponse<Object>> handleEmailHasExistedError(Exception exception) {
+        RestResponse<Object> restResponse = new RestResponse<>();
+        restResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        restResponse.setError("Bad Request");
+        restResponse.setMessage(exception.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(restResponse);
+    }
+
+    @ExceptionHandler(value = ResourceNotFoundException.class)
+    public ResponseEntity<RestResponse<Object>> handleNotFoundId(Exception exception) {
+        RestResponse<Object> restResponse = new RestResponse<>();
+        restResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        restResponse.setError("Not Found");
+        restResponse.setMessage(exception.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(restResponse);
+    }
+
+    @ExceptionHandler(value = NoResourceFoundException.class)
+    public ResponseEntity<RestResponse<Object>> handleNotFound(Exception exception) {
+        RestResponse<Object> restResponse = new RestResponse<>();
+        restResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        restResponse.setError("404 Not found. URL không tồn tại");
+        restResponse.setMessage(exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(restResponse);
     }

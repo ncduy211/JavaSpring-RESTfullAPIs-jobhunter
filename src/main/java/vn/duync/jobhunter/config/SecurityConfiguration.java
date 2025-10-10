@@ -33,7 +33,7 @@ public class SecurityConfiguration {
     @Value("${duync.jwt.base64-secret}")
     private String jwtKey;
 
-    @Value("${duync.jwt.token-validity-in-seconds}")
+    @Value("${duync.jwt.access-token-validity-in-seconds}")
     private String jwtExpiration;
 
     @Bean
@@ -69,7 +69,7 @@ public class SecurityConfiguration {
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         grantedAuthoritiesConverter.setAuthorityPrefix("");
-        grantedAuthoritiesConverter.setAuthoritiesClaimName("duync");
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("permission");
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
@@ -84,7 +84,8 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(
                         authz -> authz
-                                .requestMatchers("/", "/login")
+                                .requestMatchers("/", "auth/account",
+                                        "/auth/login")
                                 .permitAll()
                                 .anyRequest().authenticated())
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())

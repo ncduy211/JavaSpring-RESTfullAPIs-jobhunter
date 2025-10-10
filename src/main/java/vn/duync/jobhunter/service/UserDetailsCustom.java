@@ -24,7 +24,8 @@ public class UserDetailsCustom implements UserDetailsService {
             throw new UsernameNotFoundException("Username/Password không hợp lệ");
         }
 
-        return new User(user.getEmail(),
+        return new User(
+                user.getEmail(),
                 user.getPassword(),
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
     }

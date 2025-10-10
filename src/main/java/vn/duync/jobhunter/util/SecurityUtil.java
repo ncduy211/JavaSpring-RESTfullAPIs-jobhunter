@@ -2,6 +2,8 @@ package vn.duync.jobhunter.util;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +19,8 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
+import vn.duync.jobhunter.domain.dto.ResLoginDTO;
+
 @Service
 public class SecurityUtil {
 
@@ -30,19 +34,47 @@ public class SecurityUtil {
     @Value("${duync.jwt.base64-secret}")
     private String jwtKey;
 
-    @Value("${duync.jwt.token-validity-in-seconds}")
-    private long jwtExpiration;
+    @Value("${duync.jwt.access-token-validity-in-seconds}")
+    private long accessTokenExpiration;
 
-    public String createToken(Authentication authentication) {
+    @Value("${duync.jwt.refresh-token-validity-in-seconds}")
+    private long refreshTokenExpiration;
+
+    public String createAccessToken(Authentication authentication, ResLoginDTO.UserLogin loginDTO) {
         Instant now = Instant.now();
-        Instant validity = now.plus(this.jwtExpiration, ChronoUnit.SECONDS);
+        Instant validity = now.plus(this.accessTokenExpiration, ChronoUnit.SECONDS);
+
+        // permission
+        List<String> listPermission = new ArrayList<>();
+
+        listPermission.add("ROLE_USER_CREATE");
+        listPermission.add("ROLE_USER_UPDATE");
 
         // @formatter:off
         JwtClaimsSet claims = JwtClaimsSet.builder()
             .issuedAt(now)
             .expiresAt(validity)
             .subject(authentication.getName())
-            .claim("AUTHORITIES_KEY", authentication)
+            .claim("user", loginDTO)
+            .claim("permission", listPermission)
+            .build();
+
+        JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
+
+
+    }
+
+    public String createRefreshToken(String email, ResLoginDTO loginDTO) {
+        Instant now = Instant.now();
+        Instant validity = now.plus(this.refreshTokenExpiration, ChronoUnit.SECONDS);
+
+        // @formatter:off
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+            .issuedAt(now)
+            .expiresAt(validity)
+            .subject(email)
+            .claim("user", loginDTO.getUserLogin())
             .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
