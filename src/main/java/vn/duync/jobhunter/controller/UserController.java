@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.turkraft.springfilter.boot.Filter;
@@ -26,6 +27,7 @@ import vn.duync.jobhunter.util.annotation.ApiMessage;
 import vn.duync.jobhunter.util.error.IdInvalidException;
 
 @RestController
+@RequestMapping("/api/v1")
 public class UserController {
     private final UserServiceImpl userServiceImpl;
     private final PasswordEncoder passwordEncoder;
@@ -72,9 +74,9 @@ public class UserController {
 
     @DeleteMapping("/users/delete/{id}")
     @ApiMessage("Delete user")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) throws IdInvalidException {
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) throws IdInvalidException {
         this.userServiceImpl.handleDeleteUserById(id);
-        return ResponseEntity.status(HttpStatus.OK).body("User deleted successfully");
+        return ResponseEntity.ok(null);
     }
 
 }

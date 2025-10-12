@@ -84,8 +84,7 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(
                         authz -> authz
-                                .requestMatchers("/", "auth/account",
-                                        "/auth/login")
+                                .requestMatchers("/", "/api/v1/auth/login", "/api/v1/auth/refresh")
                                 .permitAll()
                                 .anyRequest().authenticated())
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
@@ -95,7 +94,9 @@ public class SecurityConfiguration {
                                 .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint()) // 401
                                 .accessDeniedHandler(new BearerTokenAccessDeniedHandler())) // 403
 
-                .formLogin(f -> f.disable())
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
