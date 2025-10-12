@@ -6,7 +6,7 @@ import com.turkraft.springfilter.boot.Filter;
 
 import jakarta.validation.Valid;
 import vn.duync.jobhunter.domain.Company;
-import vn.duync.jobhunter.domain.dto.ResultPaginationDTO;
+import vn.duync.jobhunter.domain.response.ResultPaginationDTO;
 import vn.duync.jobhunter.service.impl.CompanyServiceImpl;
 import vn.duync.jobhunter.util.error.IdInvalidException;
 

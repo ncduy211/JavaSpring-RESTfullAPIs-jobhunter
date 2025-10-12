@@ -1,4 +1,4 @@
-package vn.duync.jobhunter.domain.dto.resuserDTO;
+package vn.duync.jobhunter.domain.response;
 
 import java.time.Instant;
 

@@ -10,11 +10,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import vn.duync.jobhunter.domain.User;
-import vn.duync.jobhunter.domain.dto.Meta;
-import vn.duync.jobhunter.domain.dto.ResultPaginationDTO;
-import vn.duync.jobhunter.domain.dto.resuserDTO.ResCreateUserDTO;
-import vn.duync.jobhunter.domain.dto.resuserDTO.ResGetUserDTO;
-import vn.duync.jobhunter.domain.dto.resuserDTO.ResUpdateUserDTO;
+import vn.duync.jobhunter.domain.response.ResCreateUserDTO;
+import vn.duync.jobhunter.domain.response.ResGetUserDTO;
+import vn.duync.jobhunter.domain.response.ResUpdateUserDTO;
+import vn.duync.jobhunter.domain.response.ResultPaginationDTO;
 import vn.duync.jobhunter.repository.UserRepository;
 import vn.duync.jobhunter.service.UserService;
 import vn.duync.jobhunter.util.error.IdInvalidException;
@@ -50,7 +49,7 @@ public class UserServiceImpl implements UserService {
         Page<User> pageUser = this.userRepository.findAll(spec, pageable);
 
         ResultPaginationDTO resultPage = new ResultPaginationDTO();
-        Meta meta = new Meta();
+        ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
 
         meta.setPage(pageable.getPageNumber() + 1);
         meta.setPageSize(pageable.getPageSize());

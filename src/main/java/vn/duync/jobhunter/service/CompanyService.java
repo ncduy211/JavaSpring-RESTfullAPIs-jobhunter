@@ -4,7 +4,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import vn.duync.jobhunter.domain.Company;
-import vn.duync.jobhunter.domain.dto.ResultPaginationDTO;
+import vn.duync.jobhunter.domain.response.ResultPaginationDTO;
 
 public interface CompanyService {
     void handleCreateCompany(Company company);

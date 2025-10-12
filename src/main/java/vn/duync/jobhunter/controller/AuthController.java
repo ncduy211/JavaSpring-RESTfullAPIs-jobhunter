@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import vn.duync.jobhunter.domain.User;
-import vn.duync.jobhunter.domain.dto.LoginDTO;
-import vn.duync.jobhunter.domain.dto.ResLoginDTO;
+import vn.duync.jobhunter.domain.request.ReqLoginDTO;
+import vn.duync.jobhunter.domain.response.ResLoginDTO;
 import vn.duync.jobhunter.service.impl.UserServiceImpl;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,7 +49,7 @@ public class AuthController {
 
     @PostMapping("auth/login")
     @ApiMessage("Login")
-    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody ReqLoginDTO loginDTO) {
 
         // Nạp input gồm username/password vào Security
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
